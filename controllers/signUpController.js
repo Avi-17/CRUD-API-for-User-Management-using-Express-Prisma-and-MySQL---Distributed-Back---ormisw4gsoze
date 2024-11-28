@@ -11,16 +11,12 @@ const signUpController = async (req, res) => {
     if (!password)
       return res.status(400).json({ error: "Password is required" });
 
-    const user = await prisma.User.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email } });
     if (user) return res.status(400).json({ error: "Email already in use" });
 
     const hashedPass = await bcrypt.hash(password, 10);
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    const newUser = await prisma.User.create({
+    const newUser = await prisma.user.create({
       data: {
         name: name,
         email: email,
